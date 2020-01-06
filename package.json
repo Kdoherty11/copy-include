@@ -43,5 +43,9 @@
 		"typescript": "^3.6.4",
 		"vsce": "^1.71.0",
 		"vscode-test": "^1.2.2"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Kdoherty11/copy-include"
 	}
 }
