@@ -3,6 +3,7 @@
 	"displayName": "copyinclude",
 	"description": "Copy c++ header includes",
 	"version": "0.0.1",
+	"publisher": "kdoherty",
 	"engines": {
 		"vscode": "^1.41.0"
 	},
@@ -26,6 +27,7 @@
 		"compile": "tsc -p ./",
 		"format": "prettier --single-quote --trailing-comma es5 --write \"{src,__{tests}__}/**/*.ts\"",
 		"watch": "tsc -watch -p ./",
+		"package": "vsce package",
 		"pretest": "yarn run compile",
 		"test": "node ./out/test/runTest.js"
 	},
@@ -39,6 +41,7 @@
 		"prettier": "1.19.1",
 		"tslint": "^5.20.0",
 		"typescript": "^3.6.4",
+		"vsce": "^1.71.0",
 		"vscode-test": "^1.2.2"
 	}
 }
