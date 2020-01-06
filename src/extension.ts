@@ -1,5 +1,39 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
+import * as paths from 'path';
+
+export function activate(context: vscode.ExtensionContext) {
+  const disposable = vscode.commands.registerCommand(
+    'extension.copyInclude',
+    async () => {
+      const relative = getRelativeFilePath();
+      if (!relative) {
+        vscode.window.showErrorMessage('No active file');
+        return;
+      }
+      const header = getHeaderFilePath(relative);
+      if (!header) {
+        vscode.window.showErrorMessage(`Unrecognized cpp file: ${relative}`);
+        return;
+      }
+      // const relativeHeader = getRelativePath(header);
+      const include = getIncludeString(header);
+      await vscode.env.clipboard.writeText(include);
+    }
+  );
+
+  context.subscriptions.push(disposable);
+}
+
+function getRelativeFilePath(): string | null {
+  const path = vscode.window.activeTextEditor?.document?.uri;
+  if (!path) {
+    return null;
+  }
+  const activeDir = paths.parse(path.fsPath).dir;
+  const targetPath = path.fsPath;
+  const relativePath = paths.relative(activeDir, targetPath);
+  return relativePath;
+}
 
 function getHeaderFilePath(path: string): string | null {
   if (path.endsWith('-inl.h')) {
@@ -14,9 +48,10 @@ function getHeaderFilePath(path: string): string | null {
   return null;
 }
 
-function getRelativePath(path: string): string {
-  let relativePath = vscode.workspace.asRelativePath(path);
-  return relativePath.replace(/\\/g, '/');
+function getIncludeString(headerPath: string): string {
+  return shouldUseAngleBrackets(headerPath)
+    ? `#include <${headerPath}>`
+    : `#include "${headerPath}"`;
 }
 
 function shouldUseAngleBrackets(headerPath: string): boolean {
@@ -24,52 +59,4 @@ function shouldUseAngleBrackets(headerPath: string): boolean {
   return prefixes.some(prefix => headerPath.startsWith(prefix));
 }
 
-function getIncludeString(headerPath: string): string {
-  return shouldUseAngleBrackets(headerPath)
-    ? `#include <${headerPath}>`
-    : `#include "${headerPath}"`;
-}
-
-// file:///Documents/foo.h => /Documents/foo.h
-function removeFilePrefix(path: string): string {
-  const filePrefix = 'file://';
-  if (!path.startsWith(filePrefix)) {
-    throw new Error(`Expected ${path} to start with ${filePrefix}`);
-  }
-  return path.substring(filePrefix.length);
-}
-
-export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.commands.registerCommand(
-    'extension.copyInclude',
-    async (uri: string) => {
-      if (!uri && vscode.window.activeTextEditor) {
-        uri = vscode.window.activeTextEditor.document.uri.toString();
-      }
-      if (!uri) {
-        vscode.window.showErrorMessage(
-          'Cannot copy include, no file is opened'
-        );
-        return;
-      }
-      const headerPath = getHeaderFilePath(uri);
-      if (!headerPath) {
-        vscode.window.showErrorMessage(
-          'Unable to determine header path: ' + uri
-        );
-        return;
-      }
-      if (!fs.existsSync(removeFilePrefix(headerPath))) {
-        vscode.window.showErrorMessage('Header not found: ' + headerPath);
-        return;
-      }
-      const relativeHeaderPath = getRelativePath(headerPath);
-      const include = getIncludeString(removeFilePrefix(relativeHeaderPath));
-      await vscode.env.clipboard.writeText(include);
-    }
-  );
-
-  context.subscriptions.push(disposable);
-}
-
-export function deactivate() {}
+export function deactivate() { }
