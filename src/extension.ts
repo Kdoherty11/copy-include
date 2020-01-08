@@ -30,20 +30,18 @@ function getRelativeFilePath(): string | null {
     return null;
   }
   const activeDir = paths.parse(path.fsPath).dir;
-  const targetPath = path.fsPath;
-  const relativePath = paths.relative(activeDir, targetPath);
-  return relativePath;
+  return paths.relative(activeDir, path.fsPath);
 }
 
 function getHeaderFilePath(path: string): string | null {
   if (path.endsWith('-inl.h')) {
-    return path.substring(0, path.length - 6) + '.h';
+    return `${path.substring(0, path.length - 6)}.h`;
   }
   if (path.endsWith('.h')) {
     return path;
   }
   if (path.endsWith('.cpp')) {
-    return path.substring(0, path.length - 4) + '.h';
+    return `${path.substring(0, path.length - 4)}.h`;
   }
   return null;
 }
