@@ -28,6 +28,7 @@
 		"format": "prettier --single-quote --trailing-comma es5 --write \"{src,__{tests}__}/**/*.ts\"",
 		"watch": "tsc -watch -p ./",
 		"package": "vsce package",
+		"install-package": "code-fb-insiders --install-extension copyinclude-0.0.1.vsix",
 		"pretest": "yarn run compile",
 		"test": "node ./out/test/runTest.js"
 	},

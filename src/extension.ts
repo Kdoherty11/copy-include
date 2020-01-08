@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as paths from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
@@ -12,7 +11,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
       const header = getHeaderFilePath(relative);
       if (!header) {
-        vscode.window.showErrorMessage(`Unrecognized cpp file: ${relative}`);
+        vscode.window.showErrorMessage(`Unrecognized C++ file: ${relative}`);
         return;
       }
       const include = getIncludeString(header);
@@ -28,8 +27,7 @@ function getRelativeFilePath(): string | null {
   if (!path) {
     return null;
   }
-  const dir = paths.parse(path.fsPath).dir;
-  return paths.relative(dir, path.fsPath);
+  return vscode.workspace.asRelativePath(path);
 }
 
 function getHeaderFilePath(path: string): string | null {
