@@ -15,7 +15,6 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage(`Unrecognized cpp file: ${relative}`);
         return;
       }
-      // const relativeHeader = getRelativePath(header);
       const include = getIncludeString(header);
       await vscode.env.clipboard.writeText(include);
     }
@@ -29,8 +28,8 @@ function getRelativeFilePath(): string | null {
   if (!path) {
     return null;
   }
-  const activeDir = paths.parse(path.fsPath).dir;
-  return paths.relative(activeDir, path.fsPath);
+  const dir = paths.parse(path.fsPath).dir;
+  return paths.relative(dir, path.fsPath);
 }
 
 function getHeaderFilePath(path: string): string | null {
