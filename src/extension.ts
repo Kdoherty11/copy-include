@@ -27,7 +27,12 @@ function getRelativeFilePath(): string | null {
   if (!path) {
     return null;
   }
-  return vscode.workspace.asRelativePath(path);
+  const relPath = vscode.workspace.asRelativePath(path);
+  const fbcodePrefix = 'fbcode/';
+  if (relPath.startsWith(fbcodePrefix)) {
+    return relPath.slice(fbcodePrefix.length);
+  }
+  return relPath;
 }
 
 function getHeaderFilePath(path: string): string | null {
