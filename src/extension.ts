@@ -28,9 +28,10 @@ function getRelativeFilePath(): string | null {
     return null;
   }
   const relPath = vscode.workspace.asRelativePath(path);
-  const fbcodePrefix = 'fbcode/';
-  if (relPath.startsWith(fbcodePrefix)) {
-    return relPath.slice(fbcodePrefix.length);
+  const fbcode = 'fbcode/';
+  const fbcodeIndex = relPath.indexOf(fbcode);
+  if (fbcodeIndex >= 0) {
+    return relPath.slice(fbcodeIndex + fbcode.length);
   }
   return relPath;
 }
