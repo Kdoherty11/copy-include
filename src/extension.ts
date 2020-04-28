@@ -40,7 +40,7 @@ function getHeaderFilePath(path: string): string | null {
   if (path.endsWith('-inl.h')) {
     return `${path.substring(0, path.length - 6)}.h`;
   }
-  if (path.endsWith('.h')) {
+  if (path.endsWith('.h') || path.endsWith('.hpp')) {
     return path;
   }
   if (path.endsWith('.cpp')) {
